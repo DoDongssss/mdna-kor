@@ -25,19 +25,14 @@ const EyeballsPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [eyeballToDelete, setEyeballToDelete] =
-    useState<EyeballSummary | null>(null)
+  const [eyeballToDelete, setEyeballToDelete] = useState<EyeballSummary | null>(null)
 
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredEyeballs = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
-
     if (!query) return eyeballs
-
-    return eyeballs.filter((eyeball) =>
-      JSON.stringify(eyeball).toLowerCase().includes(query),
-    )
+    return eyeballs.filter((e) => JSON.stringify(e).toLowerCase().includes(query))
   }, [eyeballs, searchTerm])
 
   const handleAdd = () => {
@@ -64,13 +59,11 @@ const EyeballsPage = () => {
   const handleSubmit = async (data: EyeballFormData) => {
     try {
       setIsSubmitting(true)
-
       if (selectedEyeball) {
         await updateEyeball(selectedEyeball.id, data)
       } else {
         await createEyeball(data)
       }
-
       await refetch()
       handleClose()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +81,6 @@ const EyeballsPage = () => {
 
   const handleDeleteConfirm = async () => {
     if (!eyeballToDelete) return
-
     try {
       await deleteEyeball(eyeballToDelete.id)
       await refetch()
@@ -102,107 +94,91 @@ const EyeballsPage = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="space-y-5">
+
+      {/* Page header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-500">
-            Eyeballs
-          </p>
-          <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Eyeballs</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Club Meetups
           </h1>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
-            Manage meetup schedules, attendance, and related contribution
-            records.
+          <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
+            Manage meetup schedules, attendance, and contribution records.
           </p>
         </div>
-
         <button
           type="button"
           onClick={handleAdd}
-          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white shadow-sm shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98] sm:w-auto"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98] sm:w-auto"
         >
-          <Plus size={16} strokeWidth={2.4} />
-          New Eyeball
+          <Plus size={15} strokeWidth={2.5} />
+          New eyeball
         </button>
       </div>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:rounded-3xl sm:p-4 lg:p-5">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-3 sm:rounded-2xl sm:px-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-700 sm:h-9 sm:w-9">
-                  <CalendarDays size={16} />
-                </div>
-
-                <div className="min-w-0">
-                  <p className="truncate text-[11px] font-medium text-slate-400 sm:text-xs">
-                    Total meetups
-                  </p>
-                  <p className="text-lg font-black tracking-tight text-slate-950 sm:text-xl">
-                    {eyeballs.length}
-                  </p>
-                </div>
+      {/* Toolbar */}
+      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Stats pills */}
+          <div className="flex gap-2">
+            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
+                <CalendarDays size={14} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Total</p>
+                <p className="text-sm font-semibold text-slate-900">{eyeballs.length}</p>
               </div>
             </div>
-
-            <div className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-3 sm:rounded-2xl sm:px-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 sm:h-9 sm:w-9">
-                  <Search size={16} />
-                </div>
-
-                <div className="min-w-0">
-                  <p className="truncate text-[11px] font-medium text-slate-400 sm:text-xs">
-                    Showing
-                  </p>
-                  <p className="text-lg font-black tracking-tight text-slate-950 sm:text-xl">
-                    {filteredEyeballs.length}
-                  </p>
-                </div>
+            <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+                <Search size={14} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Showing</p>
+                <p className="text-sm font-semibold text-slate-900">{filteredEyeballs.length}</p>
               </div>
             </div>
           </div>
 
-          <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
-            <div className="relative w-full lg:w-80">
+          {/* Search + refresh */}
+          <div className="flex gap-2">
+            <div className="relative flex-1 sm:w-72 sm:flex-none">
               <Search
-                size={16}
+                size={15}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
-
               <input
                 value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search eyeballs..."
-                className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search eyeballs…"
+                className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:ring-2 focus:ring-sky-100"
               />
             </div>
-
             <button
               type="button"
               onClick={refetch}
-              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-950 sm:w-auto"
+              className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
             >
-              <RefreshCw size={15} />
-              Refresh
+              <RefreshCw size={14} />
+              <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
-      </section>
+      </div>
 
+      {/* Content */}
       {isLoading ? (
-        <section className="flex min-h-65 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm sm:min-h-80 sm:rounded-3xl">
+        <div className="flex min-h-64 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
           <LoadingSpinner />
-        </section>
+        </div>
       ) : error ? (
-        <section className="rounded-2xl border border-red-100 bg-red-50/70 p-5 shadow-sm sm:rounded-3xl sm:p-6">
-          <div className="mx-auto max-w-md text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600">
-              <AlertCircle size={22} />
+        <div className="rounded-xl border border-red-100 bg-red-50/60 p-6">
+          <div className="mx-auto max-w-sm text-center">
+            <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-500">
+              <AlertCircle size={20} />
             </div>
-
             <EmptyState
               title="Failed to load eyeballs"
               description={error}
@@ -210,17 +186,17 @@ const EyeballsPage = () => {
                 <button
                   type="button"
                   onClick={refetch}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600"
                 >
-                  <RefreshCw size={15} />
+                  <RefreshCw size={14} />
                   Try again
                 </button>
               }
             />
           </div>
-        </section>
+        </div>
       ) : eyeballs.length === 0 ? (
-        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 shadow-sm sm:rounded-3xl sm:p-8">
+        <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8">
           <EmptyState
             title="No eyeballs yet"
             description="Schedule your first club meetup to start tracking attendance and activity."
@@ -228,16 +204,16 @@ const EyeballsPage = () => {
               <button
                 type="button"
                 onClick={handleAdd}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98]"
               >
-                <Plus size={16} />
-                New Eyeball
+                <Plus size={15} />
+                New eyeball
               </button>
             }
           />
-        </section>
+        </div>
       ) : filteredEyeballs.length === 0 ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:rounded-3xl sm:p-8">
+        <div className="rounded-xl border border-slate-200 bg-white p-8">
           <EmptyState
             title="No matching eyeballs"
             description="Try a different search term or clear the search field."
@@ -245,23 +221,19 @@ const EyeballsPage = () => {
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-950"
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
               >
                 Clear search
               </button>
             }
           />
-        </section>
+        </div>
       ) : (
-        <section>
-          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-semibold text-slate-500">
-              {filteredEyeballs.length}{' '}
-              {filteredEyeballs.length === 1 ? 'meetup' : 'meetups'} found
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+        <div>
+          <p className="mb-3 text-xs text-slate-400">
+            {filteredEyeballs.length} {filteredEyeballs.length === 1 ? 'meetup' : 'meetups'} found
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {filteredEyeballs.map((eyeball) => (
               <EyeballCard
                 key={eyeball.id}
@@ -271,7 +243,7 @@ const EyeballsPage = () => {
               />
             ))}
           </div>
-        </section>
+        </div>
       )}
 
       <EyeballForm
@@ -284,7 +256,7 @@ const EyeballsPage = () => {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Delete Eyeball"
+        title="Delete eyeball"
         description="Are you sure you want to delete this meetup? All attendance and contributions linked to it will be affected."
         confirmLabel="Delete"
         variant="danger"

@@ -12,13 +12,11 @@ import EventsPage from './features/events/EventsPage'
 
 import EventsPublicPage from './pages/EventsPublicPage'
 import LandingPage from './pages/LandingPage'
+import TransparencyPage from './pages/TransparencyPage'
 
 import PublicLayout from './components/layout/PublicLayout'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import LoginPage from './features/auth/LoginPage'
-
-// Public Pages (placeholders)
-const TransparencyPage  = () => <div className="p-8">Transparency Page</div>
 
 export const router = createBrowserRouter([
 

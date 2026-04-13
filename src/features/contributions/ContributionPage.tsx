@@ -1,57 +1,57 @@
 import { useState } from 'react'
+import { useAdminToast } from '../../hooks/useAdminToast'
+import { AlertCircle, Plus, RefreshCw, TrendingUp, Receipt, Filter } from 'lucide-react'
 import { useContributions } from '../../hooks/useContributions'
 import { useEyeballs } from '../../hooks/useEyeballs'
 import { deleteContribution } from '../../lib/contributions'
 import { supabase } from '../../supabase/client'
 import type { ContributionWithMember } from '../../types/contributions'
 import type { ContributionFormData } from '../../schemas/contribution.schema'
-import PageHeader     from '../../components/common/PageHeader'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
-import EmptyState     from '../../components/common/EmptyState'
-import ConfirmDialog  from '../../components/common/ConfirmDialog'
+import EmptyState from '../../components/common/EmptyState'
+import ConfirmDialog from '../../components/common/ConfirmDialog'
 import ContributionList from './ContributionList'
 import ContributionForm from './ContributionForm'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const ContributionsPage = () => {
+  const { toast } = useAdminToast()
   const { contributions, isLoading, error, total, refetch } = useContributions()
   const { eyeballs } = useEyeballs()
 
-  const [formOpen, setFormOpen]                   = useState(false)
-  const [isSubmitting, setIsSubmitting]           = useState(false)
-  const [confirmOpen, setConfirmOpen]             = useState(false)
-  const [contribToDelete, setContribToDelete]     = useState<ContributionWithMember | null>(null)
+  const [formOpen, setFormOpen]               = useState(false)
+  const [isSubmitting, setIsSubmitting]       = useState(false)
+  const [confirmOpen, setConfirmOpen]         = useState(false)
+  const [contribToDelete, setContribToDelete] = useState<ContributionWithMember | null>(null)
+  const [filterEyeball, setFilterEyeball]     = useState('')
+  const [filterMethod, setFilterMethod]       = useState('')
+  const [filtersOpen, setFiltersOpen]         = useState(false)
 
-  // Filter state
-  const [filterEyeball, setFilterEyeball]         = useState('')
-  const [filterMethod, setFilterMethod]           = useState('')
-
-  // ── Derived filtered list ──────────────────────
   const filtered = contributions
     .filter((c: ContributionWithMember) => filterEyeball ? c.eyeball_id === filterEyeball : true)
     .filter((c: ContributionWithMember) => filterMethod  ? c.payment_method === filterMethod : true)
 
   const filteredTotal = filtered.reduce((sum: number, c: ContributionWithMember) => sum + c.amount, 0)
+  const hasFilters = !!(filterEyeball || filterMethod)
 
-  // ── Handlers ──────────────────────────────────
   const handleSubmit = async (data: ContributionFormData) => {
     try {
       setIsSubmitting(true)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase.from('contributions') as any)
-        .insert({
-          member_id:      data.member_id,
-          eyeball_id:     data.eyeball_id     || null,
-          amount:         data.amount,
-          notes:          data.notes          || null,
-          payment_method: data.payment_method || null,
-        })
+      const { error } = await (supabase.from('contributions') as any).insert({
+        member_id:      data.member_id,
+        eyeball_id:     data.eyeball_id     || null,
+        amount:         data.amount,
+        notes:          data.notes          || null,
+        payment_method: data.payment_method || null,
+      })
       if (error) throw error
       await refetch()
       setFormOpen(false)
+      toast('Contribution added successfully')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err.message)
+      toast(err.message ?? 'Something went wrong', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -67,141 +67,185 @@ const ContributionsPage = () => {
     try {
       await deleteContribution(contribToDelete.id)
       await refetch()
+      toast('Contribution deleted')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err.message)
+      toast(err.message ?? 'Something went wrong', 'error')
     } finally {
       setConfirmOpen(false)
       setContribToDelete(null)
     }
   }
 
-  // ── Render ────────────────────────────────────
   return (
-    <div>
-      <PageHeader
-        title="Contributions"
-        subtitle="All fund contributions across meetups"
-        action={
-          <button
-            onClick={() => setFormOpen(true)}
-            className="bg-[#1a1a18] text-white text-sm px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
-          >
-            + Add Contribution
-          </button>
-        }
-      />
+    <div className="space-y-5">
 
-      {/* Summary card */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-white rounded-xl border border-stone-200 px-5 py-4">
-          <p className="text-[11px] text-stone-400 uppercase tracking-widest mb-1">
-            Total Contributions
+      {/* Page Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-500">Finance</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+            Contributions
+          </h1>
+          <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
+            Track all fund contributions across eyeballs and members.
           </p>
-          <p className="text-2xl font-medium text-green-600">
+        </div>
+        <button
+          type="button"
+          onClick={() => setFormOpen(true)}
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 text-sm font-medium text-white transition hover:bg-emerald-600 active:scale-[0.98] sm:w-auto"
+        >
+          <Plus size={15} strokeWidth={2.5} />
+          Add contribution
+        </button>
+      </div>
+
+      {/* Stats */}
+      <section className="grid grid-cols-2 gap-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+            <TrendingUp size={16} />
+          </div>
+          <p className="text-2xl font-semibold tracking-tight text-slate-950">
             {formatCurrency(total)}
           </p>
+          <p className="mt-0.5 text-xs text-slate-400">Total Funds</p>
         </div>
-        <div className="bg-white rounded-xl border border-stone-200 px-5 py-4">
-          <p className="text-[11px] text-stone-400 uppercase tracking-widest mb-1">
-            Total Records
-          </p>
-          <p className="text-2xl font-medium text-[#1a1a18]">
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+            <Receipt size={16} />
+          </div>
+          <p className="text-2xl font-semibold tracking-tight text-slate-950">
             {contributions.length}
           </p>
+          <p className="mt-0.5 text-xs text-slate-400">Records</p>
         </div>
-      </div>
+      </section>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <select
-          value={filterEyeball}
-          onChange={(e) => setFilterEyeball(e.target.value)}
-          className="flex-1 bg-white border border-stone-200 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-[#1a1a18] transition"
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen(v => !v)}
+          className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
         >
-          <option value="">All Eyeballs</option>
-          {eyeballs.map((e) => (
-            <option key={e.id} value={e.id}>
-              {e.title ?? 'Eyeball'} — {e.date}
-            </option>
-          ))}
-        </select>
-        <select
-          value={filterMethod}
-          onChange={(e) => setFilterMethod(e.target.value)}
-          className="flex-1 bg-white border border-stone-200 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-[#1a1a18] transition"
-        >
-          <option value="">All Payment Methods</option>
-          {['Cash', 'GCash', 'Bank Transfer', 'Other'].map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-        {(filterEyeball || filterMethod) && (
-          <button
-            onClick={() => { setFilterEyeball(''); setFilterMethod('') }}
-            className="text-sm text-stone-400 hover:text-[#1a1a18] px-4 py-2 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors whitespace-nowrap"
+          <span className="flex items-center gap-2">
+            <Filter size={14} />
+            Filters
+            {hasFilters && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
+                {[filterEyeball, filterMethod].filter(Boolean).length}
+              </span>
+            )}
+          </span>
+          <svg
+            className={`h-4 w-4 text-slate-400 transition-transform ${filtersOpen ? 'rotate-180' : ''}`}
+            fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
           >
-            Clear filters
-          </button>
-        )}
-      </div>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-      {/* Filtered total */}
-      {(filterEyeball || filterMethod) && (
-        <div className="mb-4 px-1">
-          <p className="text-xs text-stone-400">
-            Showing {filtered.length} records —
-            filtered total:{' '}
-            <span className="text-green-600 font-medium">
-              {formatCurrency(filteredTotal)}
-            </span>
-          </p>
-        </div>
-      )}
+        {filtersOpen && (
+          <div className="border-t border-slate-100 px-4 pb-4 pt-3 space-y-3">
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              <select
+                value={filterEyeball}
+                onChange={(e) => setFilterEyeball(e.target.value)}
+                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-slate-400 transition"
+              >
+                <option value="">All Eyeballs</option>
+                {eyeballs.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.title ?? 'Eyeball'} — {e.date}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={filterMethod}
+                onChange={(e) => setFilterMethod(e.target.value)}
+                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-slate-400 transition"
+              >
+                <option value="">All Methods</option>
+                {['Cash', 'GCash', 'Bank Transfer', 'Other'].map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
+            {hasFilters && (
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-slate-400">
+                  {filtered.length} result{filtered.length !== 1 ? 's' : ''} ·{' '}
+                  <span className="font-semibold text-emerald-600">{formatCurrency(filteredTotal)}</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setFilterEyeball(''); setFilterMethod('') }}
+                  className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
 
       {/* Content */}
       {isLoading ? (
-        <LoadingSpinner />
+        <section className="flex min-h-64 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <LoadingSpinner />
+        </section>
       ) : error ? (
-        <EmptyState
-          title="Failed to load contributions"
-          description={error}
-          action={
-            <button
-              onClick={refetch}
-              className="text-sm text-stone-500 underline"
-            >
-              Try again
-            </button>
-          }
-        />
+        <section className="rounded-2xl border border-red-100 bg-red-50/60 p-6">
+          <div className="mx-auto max-w-sm text-center">
+            <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-500">
+              <AlertCircle size={20} />
+            </div>
+            <EmptyState
+              title="Failed to load contributions"
+              description={error}
+              action={
+                <button
+                  type="button"
+                  onClick={refetch}
+                  className="inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600"
+                >
+                  <RefreshCw size={14} />
+                  Try again
+                </button>
+              }
+            />
+          </div>
+        </section>
       ) : filtered.length === 0 ? (
-        <EmptyState
-          title="No contributions found"
-          description={
-            filterEyeball || filterMethod
-              ? 'Try adjusting your filters'
-              : 'Record contributions from the Eyeball detail page or add one manually'
-          }
-          action={
-            !filterEyeball && !filterMethod ? (
-              <button
-                onClick={() => setFormOpen(true)}
-                className="bg-[#1a1a18] text-white text-sm px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
-              >
-                + Add Contribution
-              </button>
-            ) : undefined
-          }
-        />
+        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8">
+          <EmptyState
+            title="No contributions found"
+            description={
+              hasFilters
+                ? 'Try adjusting your filters.'
+                : 'Record your first contribution to get started.'
+            }
+            action={
+              !hasFilters ? (
+                <button
+                  type="button"
+                  onClick={() => setFormOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-600 active:scale-[0.98]"
+                >
+                  <Plus size={15} />
+                  Add contribution
+                </button>
+              ) : undefined
+            }
+          />
+        </section>
       ) : (
-        <ContributionList
-          contributions={filtered}
-          onDelete={handleDeleteClick}
-        />
+        <ContributionList contributions={filtered} onDelete={handleDeleteClick} />
       )}
 
-      {/* Form */}
       <ContributionForm
         open={formOpen}
         onSubmit={handleSubmit}
@@ -209,18 +253,14 @@ const ContributionsPage = () => {
         isSubmitting={isSubmitting}
       />
 
-      {/* Delete Confirm */}
       <ConfirmDialog
         open={confirmOpen}
         title="Delete Contribution"
-        description={`Are you sure you want to delete this contribution from ${contribToDelete?.member_name}? This cannot be undone.`}
+        description={`Remove contribution from ${contribToDelete?.member_name}? This cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDeleteConfirm}
-        onCancel={() => {
-          setConfirmOpen(false)
-          setContribToDelete(null)
-        }}
+        onCancel={() => { setConfirmOpen(false); setContribToDelete(null) }}
       />
     </div>
   )

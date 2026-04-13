@@ -10,59 +10,49 @@ const AttendanceToggle = ({ record, isSaving, onToggle }: AttendanceToggleProps)
   const isPresent = record.status === 'present'
 
   return (
-    <div className={`flex items-center justify-between px-4 py-3 rounded-lg border transition-colors ${
-      isPresent
-        ? 'bg-green-50 border-green-100'
-        : 'bg-white border-stone-100'
+    <article className={`flex items-center justify-between px-4 py-3.5 rounded-xl border transition-colors ${
+      isPresent ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-slate-200'
     }`}>
 
       {/* Member info */}
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-          isPresent ? 'bg-green-100' : 'bg-stone-100'
+      <div className="flex items-center gap-3 min-w-0">
+        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+          isPresent ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'
         }`}>
-          <span className={`text-xs font-medium ${
-            isPresent ? 'text-green-600' : 'text-stone-400'
-          }`}>
-            {record.member_name.charAt(0).toUpperCase()}
-          </span>
+          {record.member_name.charAt(0).toUpperCase()}
         </div>
-        <div>
-          <p className="text-sm font-medium text-[#1a1a18]">
-            {record.member_name}
-          </p>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-slate-900 truncate">{record.member_name}</p>
           {record.member_nickname && (
-            <p className="text-xs text-stone-400">
-              {record.member_nickname}
-            </p>
+            <p className="text-xs text-slate-400 truncate">{record.member_nickname}</p>
           )}
         </div>
       </div>
 
       {/* Toggle */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 shrink-0">
+        <span className={`text-xs font-medium hidden sm:inline ${
+          isPresent ? 'text-emerald-600' : 'text-slate-400'
+        }`}>
+          {isPresent ? 'Present' : 'Absent'}
+        </span>
         {isSaving && (
-          <div className="w-3.5 h-3.5 border-2 border-stone-300 border-t-transparent rounded-full animate-spin" />
+          <div className="w-3.5 h-3.5 border-2 border-slate-300 border-t-transparent rounded-full animate-spin" />
         )}
         <button
           onClick={() => onToggle(record.member_id, record.status)}
           disabled={isSaving}
-          className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-            isPresent ? 'bg-green-500' : 'bg-stone-200'
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isPresent ? 'bg-emerald-500' : 'bg-slate-200'
           }`}
         >
-          <span className={`inline-block w-4 h-4 bg-white rounded-full shadow transform transition-transform ${
+          <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
             isPresent ? 'translate-x-6' : 'translate-x-1'
           }`} />
         </button>
-        <span className={`text-xs font-medium w-14 ${
-          isPresent ? 'text-green-600' : 'text-stone-400'
-        }`}>
-          {isPresent ? 'Present' : 'Absent'}
-        </span>
       </div>
 
-    </div>
+    </article>
   )
 }
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useAdminToast } from '../../hooks/useAdminToast'
 import {
   AlertCircle,
   Plus,
@@ -23,6 +24,7 @@ import MemberTable from './MemberTable'
 import MemberForm from './MemberForm'
 
 const MembersPage = () => {
+  const { toast } = useAdminToast()
   const { members, isLoading, error, refetch } = useMembers()
 
   const [formOpen, setFormOpen] = useState(false)
@@ -33,14 +35,8 @@ const MembersPage = () => {
   const [memberToDelete, setMemberToDelete] = useState<Member | null>(null)
 
   const memberStats = useMemo(() => {
-    const active = members.filter((member) => member.is_active).length
-    const inactive = members.length - active
-
-    return {
-      total: members.length,
-      active,
-      inactive,
-    }
+    const active = members.filter((m) => m.is_active).length
+    return { total: members.length, active, inactive: members.length - active }
   }, [members])
 
   const handleAdd = () => {
@@ -61,18 +57,18 @@ const MembersPage = () => {
   const handleSubmit = async (data: MemberFormData) => {
     try {
       setIsSubmitting(true)
-
       if (selectedMember) {
         await updateMember(selectedMember.id, data)
+        toast('Member updated successfully')
       } else {
         await createMember(data)
+        toast('Member added successfully')
       }
-
       await refetch()
       handleClose()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err.message)
+      toast(err.message ?? 'Something went wrong', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -82,9 +78,10 @@ const MembersPage = () => {
     try {
       await toggleActive(member.id, member.is_active)
       await refetch()
+      toast(`${member.name} marked as ${member.is_active ? 'inactive' : 'active'}`)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err.message)
+      toast(err.message ?? 'Something went wrong', 'error')
     }
   }
 
@@ -95,13 +92,13 @@ const MembersPage = () => {
 
   const handleDeleteConfirm = async () => {
     if (!memberToDelete) return
-
     try {
       await softDeleteMember(memberToDelete.id)
       await refetch()
+      toast('Member removed successfully')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
-      console.error(err.message)
+      toast(err.message ?? 'Something went wrong', 'error')
     } finally {
       setConfirmOpen(false)
       setMemberToDelete(null)
@@ -109,97 +106,65 @@ const MembersPage = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-500">
-            Members
-          </p>
+    <div className="space-y-5">
 
-          <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+      {/* Page header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Members</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Club Roster
           </h1>
-
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
-            Manage active and inactive members, contact details, nicknames, and
-            roster status.
+          <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
+            Manage active and inactive members, contact details, and roster status.
           </p>
         </div>
-
         <button
           type="button"
           onClick={handleAdd}
-          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 text-sm font-semibold text-white shadow-sm shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98] sm:w-auto"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98] sm:w-auto"
         >
-          <Plus size={16} strokeWidth={2.4} />
-          Add Member
+          <Plus size={15} strokeWidth={2.5} />
+          Add member
         </button>
       </div>
 
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-600 ring-1 ring-sky-100">
-              <Users size={18} />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-400">
-                Total members
-              </p>
-              <p className="text-2xl font-black tracking-tight text-slate-950">
-                {memberStats.total}
-              </p>
-            </div>
+      {/* Stats */}
+      <section className="grid grid-cols-3 gap-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
+            <Users size={16} />
           </div>
+          <p className="text-2xl font-semibold tracking-tight text-slate-950">{memberStats.total}</p>
+          <p className="mt-0.5 text-xs text-slate-400">Total</p>
         </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
-              <UserCheck size={18} />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-400">
-                Active members
-              </p>
-              <p className="text-2xl font-black tracking-tight text-slate-950">
-                {memberStats.active}
-              </p>
-            </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+            <UserCheck size={16} />
           </div>
+          <p className="text-2xl font-semibold tracking-tight text-slate-950">{memberStats.active}</p>
+          <p className="mt-0.5 text-xs text-slate-400">Active</p>
         </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 ring-1 ring-slate-200">
-              <UserX size={18} />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-400">
-                Inactive members
-              </p>
-              <p className="text-2xl font-black tracking-tight text-slate-950">
-                {memberStats.inactive}
-              </p>
-            </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+            <UserX size={16} />
           </div>
+          <p className="text-2xl font-semibold tracking-tight text-slate-950">{memberStats.inactive}</p>
+          <p className="mt-0.5 text-xs text-slate-400">Inactive</p>
         </div>
       </section>
 
+      {/* Content */}
       {isLoading ? (
-        <section className="flex min-h-65 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm sm:min-h-80 sm:rounded-3xl">
+        <section className="flex min-h-64 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
           <LoadingSpinner />
         </section>
       ) : error ? (
-        <section className="rounded-2xl border border-red-100 bg-red-50/70 p-5 shadow-sm sm:rounded-3xl sm:p-6">
-          <div className="mx-auto max-w-md text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600">
-              <AlertCircle size={22} />
+        <section className="rounded-2xl border border-red-100 bg-red-50/60 p-6">
+          <div className="mx-auto max-w-sm text-center">
+            <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-500">
+              <AlertCircle size={20} />
             </div>
-
             <EmptyState
               title="Failed to load members"
               description={error}
@@ -207,9 +172,9 @@ const MembersPage = () => {
                 <button
                   type="button"
                   onClick={refetch}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                  className="inline-flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600"
                 >
-                  <RefreshCw size={15} />
+                  <RefreshCw size={14} />
                   Try again
                 </button>
               }
@@ -217,7 +182,7 @@ const MembersPage = () => {
           </div>
         </section>
       ) : members.length === 0 ? (
-        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 shadow-sm sm:rounded-3xl sm:p-8">
+        <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-8">
           <EmptyState
             title="No members yet"
             description="Add your first club member to start building the roster."
@@ -225,10 +190,10 @@ const MembersPage = () => {
               <button
                 type="button"
                 onClick={handleAdd}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-sky-200 transition-all hover:bg-sky-700 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98]"
               >
-                <Plus size={16} />
-                Add Member
+                <Plus size={15} />
+                Add member
               </button>
             }
           />
@@ -252,7 +217,7 @@ const MembersPage = () => {
 
       <ConfirmDialog
         open={confirmOpen}
-        title="Delete Member"
+        title="Delete member"
         description={`Are you sure you want to remove ${memberToDelete?.name}? This action cannot be undone.`}
         confirmLabel="Delete"
         variant="danger"
