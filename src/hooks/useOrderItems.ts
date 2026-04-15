@@ -12,7 +12,7 @@ export const useOrderItems = (batchId: string, pricePerUnit: number) => {
     try {
       setIsLoading(true)
       setError(null)
-      const data = await getOrderItemsByBatch(batchId, pricePerUnit)
+      const data = await getOrderItemsByBatch(batchId)
       setItems(data)
     } catch (err: any) {
       setError(err.message ?? 'Failed to load order items')

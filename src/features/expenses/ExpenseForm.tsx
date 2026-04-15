@@ -29,7 +29,6 @@ const ExpenseForm = ({
     handleSubmit,
     reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
