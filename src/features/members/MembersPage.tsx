@@ -113,7 +113,7 @@ const MembersPage = () => {
         <div className="min-w-0">
           <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Members</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-            Club Roster
+            Club Members
           </h1>
           <p className="mt-1 max-w-xl text-sm leading-6 text-slate-500">
             Manage active and inactive members, contact details, and roster status.
@@ -139,7 +139,7 @@ const MembersPage = () => {
           <p className="mt-0.5 text-xs text-slate-400">Total</p>
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
             <UserCheck size={16} />
           </div>
           <p className="text-2xl font-semibold tracking-tight text-slate-950">{memberStats.active}</p>

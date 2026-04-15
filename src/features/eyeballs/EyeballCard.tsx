@@ -68,7 +68,7 @@ const EyeballCard = ({ eyeball, onEdit, onDelete }: EyeballCardProps) => {
 
         {/* Location */}
         <div className="mb-3 flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2.5">
-          <MapPin size={14} className="mt-0.5 shrink-0 text-emerald-500" />
+          <MapPin size={14} className="mt-0.5 shrink-0 text-sky-500" />
           <span className="min-w-0 break-words text-xs text-slate-600">{eyeball.location}</span>
         </div>
 
@@ -89,7 +89,7 @@ const EyeballCard = ({ eyeball, onEdit, onDelete }: EyeballCardProps) => {
             <p className="text-[10px] text-slate-400">Absent</p>
           </div>
           <div className="flex flex-col items-center rounded-lg border border-slate-100 bg-white py-2.5">
-            <div className="mb-1 flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+            <div className="mb-1 flex h-6 w-6 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
               <Wallet size={12} />
             </div>
             <p className="truncate text-xs font-semibold text-slate-950">

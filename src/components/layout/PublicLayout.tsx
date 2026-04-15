@@ -7,7 +7,7 @@ const PublicLayout = () => {
       {/* Navbar */}
       <header className="h-14 bg-white border-b border-stone-200 flex items-center justify-between px-6">
         <Link to="/" className="font-serif text-lg text-[#1a1a18]">
-          MNDA SOX
+          MDNA : ZONE KORONADAL
         </Link>
         <nav className="flex items-center gap-6">
           <Link to="/events"       className="text-sm text-stone-500 hover:text-[#1a1a18] transition-colors">Events</Link>
@@ -24,7 +24,7 @@ const PublicLayout = () => {
       {/* Footer */}
       <footer className="border-t border-stone-200 bg-white px-6 py-4">
         <p className="text-xs text-stone-400 text-center">
-          MNDA SOX MC © {new Date().getFullYear()} — Ride with honor
+          MDNA KORONADAL © {new Date().getFullYear()} — Build to inspire.
         </p>
       </footer>
 

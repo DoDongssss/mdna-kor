@@ -135,22 +135,22 @@ const ContributionForm = ({
                 <div className="flex items-center gap-1.5 shrink-0">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all
                     ${step === s.id
-                      ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200'
+                      ? 'bg-sky-500 text-white shadow-sm shadow-sky-200'
                       : step > s.id
-                        ? 'bg-emerald-100 text-emerald-600'
+                        ? 'bg-sky-100 text-sky-600'
                         : 'bg-slate-100 text-slate-400'
                     }`}
                   >
                     {step > s.id ? '✓' : s.id}
                   </div>
                   <span className={`text-[10px] font-semibold uppercase tracking-wider hidden sm:inline transition-colors
-                    ${step === s.id ? 'text-emerald-600' : step > s.id ? 'text-emerald-400' : 'text-slate-300'}`}
+                    ${step === s.id ? 'text-sky-600' : step > s.id ? 'text-sky-400' : 'text-slate-300'}`}
                   >
                     {s.label}
                   </span>
                 </div>
                 {idx < STEPS.length - 1 && (
-                  <div className={`flex-1 h-px transition-colors ${step > s.id ? 'bg-emerald-200' : 'bg-slate-100'}`} />
+                  <div className={`flex-1 h-px transition-colors ${step > s.id ? 'bg-sky-200' : 'bg-slate-100'}`} />
                 )}
               </div>
             ))}
@@ -174,7 +174,7 @@ const ContributionForm = ({
                         key={m.id}
                         className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all
                           ${watchedMemberId === m.id
-                            ? 'border-emerald-400 bg-emerald-50'
+                            ? 'border-sky-400 bg-sky-50'
                             : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
                           }`}
                       >
@@ -189,7 +189,7 @@ const ContributionForm = ({
                           {m.nickname && <p className="text-xs text-slate-400 truncate">{m.nickname}</p>}
                         </div>
                         {watchedMemberId === m.id && (
-                          <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                          <div className="w-5 h-5 rounded-full bg-sky-500 flex items-center justify-center shrink-0">
                             <span className="text-white text-[9px] font-bold">✓</span>
                           </div>
                         )}
@@ -225,20 +225,20 @@ const ContributionForm = ({
               <div className="space-y-5">
                 {/* Context bar */}
                 {selectedMember && (
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-semibold text-emerald-700">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-sky-50 border border-sky-100">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-200 to-sky-300 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-semibold text-sky-700">
                         {selectedMember.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Contributing as</p>
-                      <p className="text-sm font-semibold text-emerald-800 truncate">{selectedMember.name}</p>
+                      <p className="text-[10px] text-sky-500 font-semibold uppercase tracking-wider">Contributing as</p>
+                      <p className="text-sm font-semibold text-sky-800 truncate">{selectedMember.name}</p>
                     </div>
                     {selectedEyeball && (
                       <div className="ml-auto shrink-0 text-right">
-                        <p className="text-[10px] text-emerald-500 font-semibold uppercase tracking-wider">Eyeball</p>
-                        <p className="text-xs font-medium text-emerald-700 truncate max-w-[100px]">
+                        <p className="text-[10px] text-sky-500 font-semibold uppercase tracking-wider">Eyeball</p>
+                        <p className="text-xs font-medium text-sky-700 truncate max-w-[100px]">
                           {selectedEyeball.title ?? 'Eyeball'}
                         </p>
                       </div>
@@ -259,7 +259,7 @@ const ContributionForm = ({
                       min="0"
                       step="1"
                       placeholder="0"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-4 text-3xl font-bold text-slate-800 focus:outline-none focus:border-emerald-400 focus:bg-white transition text-center"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-4 text-3xl font-bold text-slate-800 focus:outline-none focus:border-sky-400 focus:bg-white transition text-center"
                     />
                   </div>
                   {errors.amount && (
@@ -277,7 +277,7 @@ const ContributionForm = ({
                         onClick={() => setValue('amount', amt)}
                         className={`py-2.5 rounded-xl text-sm font-semibold border transition-all active:scale-95
                           ${watchedAmount === amt
-                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                            ? 'bg-sky-500 text-white border-sky-500 shadow-sm'
                             : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                           }`}
                       >
@@ -310,7 +310,7 @@ const ContributionForm = ({
                   </div>
                   <div className="px-4 py-2.5 flex items-center justify-between">
                     <span className="text-xs text-slate-400 font-medium">Amount</span>
-                    <span className="text-base font-bold text-emerald-600">
+                    <span className="text-base font-bold text-sky-600">
                       {watchedAmount ? formatCurrency(watchedAmount) : '—'}
                     </span>
                   </div>
@@ -344,7 +344,7 @@ const ContributionForm = ({
                         key={m}
                         className={`flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-all text-sm font-medium active:scale-95
                           ${watchedPaymentMethod === m
-                            ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
+                            ? 'border-sky-400 bg-sky-50 text-sky-700'
                             : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
                           }`}
                       >
@@ -400,7 +400,7 @@ const ContributionForm = ({
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 text-sm bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 active:scale-95 transition-all font-medium"
+                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-3 text-sm bg-sky-500 text-white rounded-xl hover:bg-sky-600 active:scale-95 transition-all font-medium"
               >
                 Next
                 <ChevronRight size={15} />

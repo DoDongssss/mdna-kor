@@ -1,7 +1,7 @@
 import type { ContributionWithMember } from '../../types/contributions'
 import type { Expense } from '../../types/expenses'
 import { formatCurrency } from '../../utils/formatCurrency'
-import { formatDate } from '../../utils/formatDate'
+import { formatDate }     from '../../utils/formatDate'
 
 interface RecentActivityListProps {
   contributions: ContributionWithMember[]
@@ -12,10 +12,7 @@ type ActivityItem =
   | { type: 'contribution'; date: string; label: string; amount: number }
   | { type: 'expense';      date: string; label: string; amount: number }
 
-const RecentActivityList = ({
-  contributions,
-  expenses,
-}: RecentActivityListProps) => {
+const RecentActivityList = ({ contributions, expenses }: RecentActivityListProps) => {
   const items: ActivityItem[] = [
     ...contributions.map((c) => ({
       type:   'contribution' as const,
@@ -36,48 +33,49 @@ const RecentActivityList = ({
   if (items.length === 0) {
     return (
       <div className="flex items-center justify-center py-10">
-        <p className="text-sm text-stone-400">No recent activity</p>
+        <p className="text-sm text-slate-400">No recent activity</p>
       </div>
     )
   }
 
   return (
-    <div className="divide-y divide-stone-50">
+    <div className="divide-y divide-slate-50">
       {items.map((item, index) => (
         <div
           key={index}
-          className="flex items-center justify-between py-3 hover:bg-stone-50 px-1 rounded-lg transition-colors"
+          className="group flex items-center justify-between gap-3 py-3 px-2 -mx-2 rounded-lg hover:bg-slate-50 transition-colors"
         >
-          {/* Left */}
-          <div className="flex items-center gap-3">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+          {/* Icon + label */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
               item.type === 'contribution'
-                ? 'bg-green-100'
-                : 'bg-red-50'
+                ? 'bg-sky-50 text-sky-600'
+                : 'bg-rose-50 text-rose-500'
             }`}>
-              <span className={`text-xs font-medium ${
-                item.type === 'contribution'
-                  ? 'text-green-600'
-                  : 'text-red-400'
-              }`}>
-                {item.type === 'contribution' ? '+' : '−'}
-              </span>
+              {item.type === 'contribution' ? '+' : '−'}
             </div>
-            <div>
-              <p className="text-sm text-[#1a1a18]">{item.label}</p>
-              <p className="text-xs text-stone-400">{formatDate(item.date)}</p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-slate-800">
+                {item.label}
+              </p>
+              <p className="text-xs text-slate-400">{formatDate(item.date)}</p>
             </div>
           </div>
 
-          {/* Right */}
-          <span className={`text-sm font-medium ${
-            item.type === 'contribution'
-              ? 'text-green-600'
-              : 'text-red-500'
-          }`}>
-            {item.type === 'contribution' ? '+' : '−'}
-            {formatCurrency(item.amount)}
-          </span>
+          {/* Amount + type badge */}
+          <div className="flex shrink-0 flex-col items-end gap-0.5">
+            <span className={`text-sm font-semibold tabular-nums ${
+              item.type === 'contribution' ? 'text-sky-600' : 'text-rose-500'
+            }`}>
+              {item.type === 'contribution' ? '+' : '−'}
+              {formatCurrency(item.amount)}
+            </span>
+            <span className={`text-[10px] font-medium uppercase tracking-wide ${
+              item.type === 'contribution' ? 'text-sky-400' : 'text-rose-300'
+            }`}>
+              {item.type === 'contribution' ? 'contrib' : 'expense'}
+            </span>
+          </div>
         </div>
       ))}
     </div>

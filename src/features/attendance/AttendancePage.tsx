@@ -88,7 +88,7 @@ const AttendanceContent = ({ eyeball }: { eyeball: EyeballSummary }) => {
           <p className="mt-0.5 text-xs text-slate-400">Total</p>
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
             <UserCheck size={16} />
           </div>
           <p className="text-2xl font-semibold tracking-tight text-slate-950">{presentCount}</p>
@@ -117,7 +117,7 @@ const AttendanceContent = ({ eyeball }: { eyeball: EyeballSummary }) => {
               placeholder="Search member…"
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+              className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:ring-2 focus:ring-sky-100"
             />
           </div>
 
@@ -215,7 +215,6 @@ const AttendancePage = () => {
 
       {/* Page Header */}
       <div className="flex flex-col gap-1">
-        <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Attendance</p>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
           Mark Attendance
         </h1>

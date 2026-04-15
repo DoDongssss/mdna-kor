@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   CalendarDays,
-  ChevronLeft,
-  ChevronRight,
   CircleDollarSign,
   ClipboardCheck,
   MapPin,
@@ -30,6 +28,7 @@ import { formatCurrency } from '../../utils/formatCurrency'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import EmptyState from '../../components/common/EmptyState'
 import AttendanceContributionRow from '../attendance/AttendanceContributionRow'
+import Pagination from '../../components/common/Pagination'
 
 type TabType = 'attendance' | 'contributions'
 
@@ -229,7 +228,7 @@ const EyeballDetail = () => {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
 
       {/* Back */}
       <button
@@ -499,39 +498,15 @@ const EyeballDetail = () => {
             )}
           </>
         )}
-
-        {/* Pagination */}
-        {activeList.length > 0 && (
-          <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 sm:px-5">
-            <p className="text-xs text-slate-400">
-              {startIndex + 1}–{Math.min(endIndex, activeList.length)} of {activeList.length}
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                disabled={safePage <= 1}
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft size={14} />
-                Prev
-              </button>
-              <span className="min-w-12 rounded-lg bg-slate-50 px-3 py-1.5 text-center text-xs font-medium text-slate-500">
-                {safePage} / {totalPages}
-              </span>
-              <button
-                type="button"
-                disabled={safePage >= totalPages}
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Next
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
-        )}
       </section>
+      <Pagination
+        currentPage={safePage}
+        totalPages={totalPages}
+        totalItems={activeList.length}
+        filteredItems={activeList.length}
+        pageSize={PAGE_SIZE}
+        onPageChange={setCurrentPage}
+      />
     </div>
   )
 }

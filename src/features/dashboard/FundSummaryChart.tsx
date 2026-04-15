@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import type { ContributionWithMember } from '../../types/contributions'
@@ -17,124 +16,121 @@ interface FundSummaryChartProps {
   expenses:      Expense[]
 }
 
-const formatMonth = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString('en-PH', {
-    month: 'short',
-    year:  '2-digit',
-  })
+const formatMonth = (dateStr: string) =>
+  new Date(dateStr).toLocaleDateString('en-PH', { month: 'short', year: '2-digit' })
+
+// Custom tooltip
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-3 shadow-sm text-xs">
+      <p className="text-slate-400 mb-2 font-medium">{label}</p>
+      {payload.map((p: any) => (
+        <div key={p.dataKey} className="flex items-center justify-between gap-6">
+          <span className="flex items-center gap-1.5 text-slate-500">
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: p.color }}
+            />
+            {p.dataKey}
+          </span>
+          <span className="font-semibold text-slate-950">
+            ₱{Number(p.value ?? 0).toLocaleString()}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 const FundSummaryChart = ({ contributions, expenses }: FundSummaryChartProps) => {
   const data = useMemo(() => {
-    // Collect all unique months from both contributions and expenses
+    const safeContributions = contributions ?? []
+    const safeExpenses = expenses ?? []
     const monthSet = new Set<string>()
-
-    contributions.forEach((c) => {
+    safeContributions.forEach((c) => {
       const d = new Date(c.created_at)
       monthSet.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
     })
-
-    expenses.forEach((e) => {
+    safeExpenses.forEach((e) => {
       const d = new Date(e.date)
       monthSet.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
     })
 
-    // Sort months ascending
-    const months = Array.from(monthSet).sort()
-
-    return months.map((month) => {
-      const [year, mon] = month.split('-').map(Number)
-
-      const contributed = contributions
-        .filter((c) => {
-          const d = new Date(c.created_at)
-          return d.getFullYear() === year && d.getMonth() + 1 === mon
-        })
-        .reduce((sum, c) => sum + c.amount, 0)
-
-      const spent = expenses
-        .filter((e) => {
-          const d = new Date(e.date)
-          return d.getFullYear() === year && d.getMonth() + 1 === mon
-        })
-        .reduce((sum, e) => sum + e.amount, 0)
-
-      return {
-        month:         formatMonth(`${month}-01`),
-        Contributions: contributed,
-        Expenses:      spent,
-      }
-    })
+    return Array.from(monthSet)
+      .sort()
+      .map((month) => {
+        const [year, mon] = month.split('-').map(Number)
+        const contributed = safeContributions
+          .filter((c) => {
+            const d = new Date(c.created_at)
+            return d.getFullYear() === year && d.getMonth() + 1 === mon
+          })
+          .reduce((sum, c) => sum + c.amount, 0)
+        const spent = safeExpenses
+          .filter((e) => {
+            const d = new Date(e.date)
+            return d.getFullYear() === year && d.getMonth() + 1 === mon
+          })
+          .reduce((sum, e) => sum + e.amount, 0)
+        return { month: formatMonth(`${month}-01`), Contributions: contributed, Expenses: spent }
+      })
   }, [contributions, expenses])
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-48">
-        <p className="text-sm text-stone-400">
-          No data yet — add contributions or expenses to see the chart
-        </p>
+      <div className="flex h-48 items-center justify-center">
+        <p className="text-sm text-slate-400">No data yet</p>
       </div>
     )
   }
 
   return (
-    <ResponsiveContainer width="100%" height={260}>
-      <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+    <ResponsiveContainer width="100%" height={240}>
+      <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="colorContrib" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%"  stopColor="#22c55e" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+          <linearGradient id="fillContrib" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#10b981" stopOpacity={0.12} />
+            <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
           </linearGradient>
-          <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+          <linearGradient id="fillExpense" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="#f43f5e" stopOpacity={0.12} />
+            <stop offset="100%" stopColor="#f43f5e" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f0ed" />
+        <CartesianGrid strokeDasharray="2 4" stroke="#f1f5f9" vertical={false} />
         <XAxis
           dataKey="month"
-          tick={{ fontSize: 11, fill: '#a8a29e' }}
+          tick={{ fontSize: 11, fill: '#94a3b8' }}
           axisLine={false}
           tickLine={false}
+          dy={6}
         />
         <YAxis
-          tick={{ fontSize: 11, fill: '#a8a29e' }}
+          tick={{ fontSize: 11, fill: '#94a3b8' }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(v) => `₱${v.toLocaleString()}`}
-          width={70}
+          tickFormatter={(v) => `₱${(v / 1000).toFixed(0)}k`}
+          width={44}
         />
-        <Tooltip
-            formatter={(value) =>
-                [`₱${Number(value ?? 0).toLocaleString()}`]
-            }
-            contentStyle={{
-                backgroundColor: '#ffffff',
-                border:          '1px solid #e7e5e4',
-                borderRadius:    '8px',
-                fontSize:        '12px',
-            }}
-        />
-        <Legend
-          wrapperStyle={{ fontSize: '12px', paddingTop: '12px' }}
-        />
+        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#e2e8f0', strokeWidth: 1 }} />
         <Area
           type="monotone"
           dataKey="Contributions"
-          stroke="#22c55e"
+          stroke="#10b981"
           strokeWidth={2}
-          fill="url(#colorContrib)"
+          fill="url(#fillContrib)"
           dot={false}
-          activeDot={{ r: 4 }}
+          activeDot={{ r: 4, fill: '#10b981', strokeWidth: 0 }}
         />
         <Area
           type="monotone"
           dataKey="Expenses"
-          stroke="#ef4444"
+          stroke="#f43f5e"
           strokeWidth={2}
-          fill="url(#colorExpense)"
+          fill="url(#fillExpense)"
           dot={false}
-          activeDot={{ r: 4 }}
+          activeDot={{ r: 4, fill: '#f43f5e', strokeWidth: 0 }}
         />
       </AreaChart>
     </ResponsiveContainer>

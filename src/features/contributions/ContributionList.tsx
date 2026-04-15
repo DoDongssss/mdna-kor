@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import type { ContributionWithMember } from '../../types/contributions'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { formatDate } from '../../utils/formatDate'
+import Pagination from '../../components/common/Pagination'
 
 interface ContributionListProps {
   contributions: ContributionWithMember[]
@@ -12,7 +13,7 @@ interface ContributionListProps {
 const PAGE_SIZE = 10
 
 const ContributionList = ({ contributions, onDelete }: ContributionListProps) => {
-  const [search, setSearch]       = useState('')
+  const [search, setSearch]           = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
   const filtered = useMemo(() => {
@@ -24,10 +25,10 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
     )
   }, [contributions, search])
 
-  const totalPages    = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const safePage      = Math.min(currentPage, totalPages)
-  const startIndex    = (safePage - 1) * PAGE_SIZE
-  const visibleItems  = filtered.slice(startIndex, startIndex + PAGE_SIZE)
+  const totalPages   = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage     = Math.min(currentPage, totalPages)
+  const startIndex   = (safePage - 1) * PAGE_SIZE
+  const visibleItems = filtered.slice(startIndex, startIndex + PAGE_SIZE)
 
   const handleSearchChange = (value: string) => {
     setSearch(value)
@@ -49,7 +50,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
             placeholder="Search member or payment method…"
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:ring-2 focus:ring-sky-100"
           />
         </div>
       </div>
@@ -87,7 +88,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
                     <tr key={c.id} className="transition-colors hover:bg-slate-50/60 group">
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-semibold text-emerald-600">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-50 text-xs font-semibold text-sky-600">
                             {c.member_name.charAt(0).toUpperCase()}
                           </div>
                           <p className="text-sm font-medium text-slate-900">{c.member_name}</p>
@@ -113,7 +114,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
                         )}
                       </td>
                       <td className="px-5 py-3.5 text-right">
-                        <span className="text-sm font-semibold text-emerald-600">
+                        <span className="text-sm font-semibold text-sky-600">
                           {formatCurrency(c.amount)}
                         </span>
                       </td>
@@ -136,7 +137,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
                     <td colSpan={3} className="px-5 py-3 text-sm font-semibold text-slate-700">
                       Total ({contributions.length} records)
                     </td>
-                    <td className="px-5 py-3 text-right text-sm font-bold text-emerald-600">
+                    <td className="px-5 py-3 text-right text-sm font-bold text-sky-600">
                       {formatCurrency(contributions.reduce((sum, c) => sum + c.amount, 0))}
                     </td>
                     <td colSpan={2} />
@@ -156,7 +157,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-600">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sm font-semibold text-sky-600">
                         {c.member_name.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
@@ -166,7 +167,7 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
                         <p className="mt-0.5 text-xs text-slate-400">{formatDate(c.created_at)}</p>
                       </div>
                     </div>
-                    <span className="shrink-0 text-base font-bold text-emerald-600">
+                    <span className="shrink-0 text-base font-bold text-sky-600">
                       {formatCurrency(c.amount)}
                     </span>
                   </div>
@@ -203,50 +204,25 @@ const ContributionList = ({ contributions, onDelete }: ContributionListProps) =>
             ))}
 
             {/* Mobile Total */}
-            <div className="flex items-center justify-between rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3.5">
+            <div className="flex items-center justify-between rounded-xl border border-sky-100 bg-sky-50 px-4 py-3.5">
               <span className="text-sm font-semibold text-slate-600">
                 Total · {contributions.length} records
               </span>
-              <span className="text-base font-bold text-emerald-600">
+              <span className="text-base font-bold text-sky-600">
                 {formatCurrency(contributions.reduce((sum, c) => sum + c.amount, 0))}
               </span>
             </div>
           </div>
 
-          {/* Pagination — exact same pattern as MemberTable */}
-          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 shadow-sm">
-            <p className="text-xs text-slate-400">
-              {startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filtered.length)} of{' '}
-              {filtered.length}
-              {filtered.length !== contributions.length
-                ? ` (filtered from ${contributions.length})`
-                : ''}{' '}
-              records
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                disabled={safePage <= 1}
-                onClick={() => setCurrentPage(safePage - 1)}
-                className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft size={14} />
-                Prev
-              </button>
-              <span className="min-w-12 rounded-lg bg-slate-50 px-3 py-1.5 text-center text-xs font-medium text-slate-500">
-                {safePage} / {totalPages}
-              </span>
-              <button
-                type="button"
-                disabled={safePage >= totalPages}
-                onClick={() => setCurrentPage(safePage + 1)}
-                className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Next
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
+          {/* Pagination */}
+          <Pagination
+            currentPage={safePage}
+            totalPages={totalPages}
+            totalItems={contributions.length}
+            filteredItems={filtered.length}
+            pageSize={PAGE_SIZE}
+            onPageChange={setCurrentPage}
+          />
         </>
       )}
     </section>

@@ -132,7 +132,7 @@ const EyeballsPage = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
                 <Search size={14} />
               </div>
               <div>

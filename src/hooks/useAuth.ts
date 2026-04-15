@@ -6,12 +6,10 @@ export const useAuth = () => {
   const { setSession, ...store } = useAuthStore()
 
   useEffect(() => {
-    // Get initial session on app load
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
 
-    // Listen for auth changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session)

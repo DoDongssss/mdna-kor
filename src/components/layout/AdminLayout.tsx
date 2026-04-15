@@ -11,6 +11,7 @@ import {
   Users,
   Wallet,
   X,
+  ShoppingBag,
 } from 'lucide-react'
 import { useAuthStore } from '../../stores/auth.store'
 import { useToast } from '../../hooks/useToast'
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { label: 'Contributions', path: '/admin/contributions', icon: Wallet },
   { label: 'Expenses', path: '/admin/expenses', icon: Receipt },
   { label: 'Events', path: '/admin/events', icon: CalendarDays },
+  { label: 'Orders', path: '/admin/orders', icon: ShoppingBag },
 ]
 
 const AdminLayout = () => {
@@ -69,7 +71,7 @@ const AdminLayout = () => {
           <div className="flex h-14 shrink-0 items-center justify-between border-b border-slate-100 px-4">
             <div>
               <h1 className="text-base font-semibold tracking-tight text-slate-950">
-                MNDA<span className="text-sky-500">SOX</span>
+                MDNA<span className="text-sky-500"> KORONADAL</span>
               </h1>
               <p className="text-[10px] text-slate-400 mt-0.5">Admin Console</p>
             </div>
@@ -108,7 +110,7 @@ const AdminLayout = () => {
                     {({ isActive }) => (
                       <>
                         <span
-                          className={`absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full transition-all ${
+                          className={`absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full transition-all ${
                             isActive ? 'bg-sky-500' : 'bg-transparent'
                           }`}
                         />
@@ -139,7 +141,7 @@ const AdminLayout = () => {
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-slate-900">Admin User</p>
-                <p className="truncate text-xs text-slate-400">MNDA SOX MC</p>
+                <p className="truncate text-xs text-slate-400">MDNA : ZONE Koronadal</p>
               </div>
             </div>
             <button
@@ -156,35 +158,37 @@ const AdminLayout = () => {
         {/* Main */}
         <div className="flex min-w-0 flex-1 flex-col">
 
-          {/* Topbar */}
-          <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-6">
-            <div className="flex min-w-0 items-center gap-3">
-              <button
-                type="button"
-                aria-label="Open sidebar"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 lg:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu size={18} />
-              </button>
-              <div className="min-w-0">
-                <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Admin</p>
-                <h2 className="truncate text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
-                  {currentTitle}
-                </h2>
-              </div>
+        {/* Topbar */}
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              type="button"
+              aria-label="Open sidebar"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu size={18} />
+            </button>
+            <div className="min-w-0">
+              <h2 className="truncate text-base font-semibold tracking-tight text-slate-950 sm:text-lg leading-tight">
+                {currentTitle}
+              </h2>
+              <p className="text-[11px] text-slate-400 italic tracking-wide">
+                We build to inspire, not to impress.
+              </p>
             </div>
+          </div>
 
-            <div className="flex shrink-0 items-center gap-3">
-              <div className="hidden text-right sm:block">
-                <p className="text-sm font-medium text-slate-900">Admin User</p>
-                <p className="text-xs text-slate-400">MNDA SOX MC</p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-sm font-semibold text-white">
-                A
-              </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-medium text-slate-900">Admin User</p>
+              <p className="text-xs text-slate-400">MDNA KOR</p>
             </div>
-          </header>
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500 text-sm font-semibold text-white">
+              A
+            </div>
+          </div>
+        </header>
 
           {/* Page Content */}
           <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">

@@ -28,13 +28,13 @@ const LoginPage = () => {
       <div className="w-full max-w-3xl flex rounded-2xl overflow-hidden shadow-sm border border-stone-200">
 
         {/* Left — Brand Panel */}
-        <div className="hidden md:flex flex-col justify-between bg-[#1a1a18] p-10 w-64 shrink-0">
+        <div className="hidden md:flex flex-col justify-between bg-gray-800 p-10 w-64 shrink-0">
           <div>
             <h1 className="font-serif text-4xl text-white leading-tight tracking-wide">
-              MNDA<br />SOX
+              Malaysian<br />DNA
             </h1>
             <p className="text-[11px] text-stone-500 tracking-widest uppercase mt-2">
-              Motorcycle Club
+              Zone Koronadal
             </p>
           </div>
           <p className="text-[11px] text-stone-600">
@@ -47,11 +47,11 @@ const LoginPage = () => {
           <div className="w-full max-w-xs">
 
             {/* Badge */}
-            <span className="inline-block bg-stone-100 text-stone-500 text-[10px] tracking-widest uppercase px-3 py-1 rounded-full mb-6">
+            <span className="inline-block bg-sky-100 shadow-sm text-sky-600 text-[9px] tracking-widest uppercase px-2 py-1 rounded-full mb-6">
               Admin Access
             </span>
 
-            <h2 className="text-xl font-medium text-[#1a1a18] mb-1">
+            <h2 className="text-xl font-medium text-sky-700 mb-1">
               Welcome back
             </h2>
             <p className="text-sm text-stone-400 mb-8">
@@ -105,7 +105,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#1a1a18] hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition"
+                className="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition"
               >
                 {isLoading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -113,13 +113,12 @@ const LoginPage = () => {
             </form>
 
             <hr className="border-stone-100 my-6" />
-            <p className="text-center text-xs text-stone-300">
-              MNDA SOX MC — Members only
+            <p className="text-center text-xs text-sky-700">
+              MDNA KORONADAL — Admin only
             </p>
 
           </div>
         </div>
-
       </div>
     </div>
   )

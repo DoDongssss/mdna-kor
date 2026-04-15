@@ -83,7 +83,7 @@ const ContributionsPage = () => {
       {/* Page Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-medium uppercase tracking-widest text-emerald-500">Finance</p>
+          <p className="text-[10px] font-medium uppercase tracking-widest text-sky-500">Finance</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
             Contributions
           </h1>
@@ -94,7 +94,7 @@ const ContributionsPage = () => {
         <button
           type="button"
           onClick={() => setFormOpen(true)}
-          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 text-sm font-medium text-white transition hover:bg-emerald-600 active:scale-[0.98] sm:w-auto"
+          className="flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98] sm:w-auto"
         >
           <Plus size={15} strokeWidth={2.5} />
           Add contribution
@@ -104,7 +104,7 @@ const ContributionsPage = () => {
       {/* Stats */}
       <section className="grid grid-cols-2 gap-3">
         <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
-          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500">
+          <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-500">
             <TrendingUp size={16} />
           </div>
           <p className="text-2xl font-semibold tracking-tight text-slate-950">
@@ -134,7 +134,7 @@ const ContributionsPage = () => {
             <Filter size={14} />
             Filters
             {hasFilters && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
                 {[filterEyeball, filterMethod].filter(Boolean).length}
               </span>
             )}
@@ -177,7 +177,7 @@ const ContributionsPage = () => {
               <div className="flex items-center justify-between">
                 <p className="text-xs text-slate-400">
                   {filtered.length} result{filtered.length !== 1 ? 's' : ''} ·{' '}
-                  <span className="font-semibold text-emerald-600">{formatCurrency(filteredTotal)}</span>
+                  <span className="font-semibold text-sky-600">{formatCurrency(filteredTotal)}</span>
                 </p>
                 <button
                   type="button"
@@ -233,7 +233,7 @@ const ContributionsPage = () => {
                 <button
                   type="button"
                   onClick={() => setFormOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-600 active:scale-[0.98]"
+                  className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98]"
                 >
                   <Plus size={15} />
                   Add contribution

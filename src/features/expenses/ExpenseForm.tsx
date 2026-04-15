@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { expenseSchema, type ExpenseFormData } from '../../schemas/expense.schema'
 import { useEyeballs } from '../../hooks/useEyeballs'
 import type { Expense } from '../../types/expenses'
+import EyeballCombobox from './EyeballCombobox'
 
 interface ExpenseFormProps {
   open:         boolean
@@ -27,6 +28,8 @@ const ExpenseForm = ({
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
@@ -39,6 +42,11 @@ const ExpenseForm = ({
     },
   })
 
+  const eyeballId = watch('eyeball_id') ?? ''
+
+  // Track combobox value as string (empty string = none)
+  const [comboValue, setComboValue] = useState('')
+
   useEffect(() => {
     if (expense) {
       reset({
@@ -46,8 +54,9 @@ const ExpenseForm = ({
         amount:      expense.amount,
         description: expense.description ?? '',
         date:        expense.date,
-        eyeball_id:  expense.eyeball_id   ?? undefined,
+        eyeball_id:  expense.eyeball_id ?? undefined,
       })
+      setComboValue(expense.eyeball_id ?? '')
     } else {
       reset({
         title:       '',
@@ -56,8 +65,20 @@ const ExpenseForm = ({
         date:        new Date().toISOString().split('T')[0],
         eyeball_id:  undefined,
       })
+      setComboValue('')
     }
   }, [expense, reset])
+
+  // Keep RHF in sync with combobox
+  const handleEyeballChange = (val: string) => {
+    setComboValue(val)
+    setValue('eyeball_id', val || undefined, { shouldValidate: true })
+  }
+
+  const eyeballOptions = eyeballs.map((e) => ({
+    value: e.id,
+    label: `${e.title ?? 'Eyeball'} — ${e.date}${e.location ? ` · ${e.location}` : ''}`,
+  }))
 
   if (!open) return null
 
@@ -144,7 +165,7 @@ const ExpenseForm = ({
             )}
           </div>
 
-          {/* Eyeball — optional */}
+          {/* Eyeball — searchable combobox */}
           <div>
             <label className="block text-[11px] font-medium text-stone-400 tracking-widest uppercase mb-2">
               Eyeball{' '}
@@ -152,17 +173,13 @@ const ExpenseForm = ({
                 (optional)
               </span>
             </label>
-            <select
-              {...register('eyeball_id')}
-              className="w-full bg-stone-50 border border-stone-200 rounded-lg px-4 py-2.5 text-sm text-[#1a1a18] focus:outline-none focus:border-[#1a1a18] transition"
-            >
-              <option value="">— Not linked to a meetup —</option>
-              {eyeballs.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.title ?? 'Eyeball'} — {e.date} · {e.location}
-                </option>
-              ))}
-            </select>
+            <EyeballCombobox
+              options={eyeballOptions}
+              value={comboValue}
+              onChange={handleEyeballChange}
+              placeholder="Search eyeballs…"
+              emptyLabel="— Not linked to a meetup —"
+            />
           </div>
 
           {/* Description */}

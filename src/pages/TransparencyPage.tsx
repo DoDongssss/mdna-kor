@@ -347,7 +347,7 @@ const TransparencyPage = () => {
           {/* Footer note */}
           <p className="text-center text-xs text-stone-300 mt-8">
             All records are live and updated in real time.
-            MNDA SOX MC © {new Date().getFullYear()}
+            MDNA SOX © {new Date().getFullYear()} Build to inspire.
           </p>
         </>
       )}

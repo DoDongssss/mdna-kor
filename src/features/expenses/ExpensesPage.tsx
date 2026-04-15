@@ -10,7 +10,11 @@ import EmptyState     from '../../components/common/EmptyState'
 import ConfirmDialog  from '../../components/common/ConfirmDialog'
 import ExpenseList    from './ExpenseList'
 import ExpenseForm    from './ExpenseForm'
+import EyeballCombobox from './EyeballCombobox'
 import { formatCurrency } from '../../utils/formatCurrency'
+
+const FILTER_NONE   = 'none'   // expenses not linked to any eyeball
+const FILTER_ALL    = ''       // show everything
 
 const ExpensesPage = () => {
   const { expenses, isLoading, error, total, refetch } = useExpenses()
@@ -22,17 +26,28 @@ const ExpensesPage = () => {
   const [confirmOpen, setConfirmOpen]         = useState(false)
   const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null)
 
-  // Filter state
-  const [filterEyeball, setFilterEyeball]     = useState('')
+  // Filter state — '' = all, 'none' = unlinked, eyeball id = specific eyeball
+  const [filterEyeball, setFilterEyeball] = useState(FILTER_ALL)
 
   // Derived filtered list
-  const filtered = expenses.filter((e) =>
-    filterEyeball ? e.eyeball_id === filterEyeball : true
-  )
+  const filtered = expenses.filter((e) => {
+    if (!filterEyeball) return true
+    if (filterEyeball === FILTER_NONE) return !e.eyeball_id
+    return e.eyeball_id === filterEyeball
+  })
 
   const filteredTotal = filtered.reduce(
     (sum: number, e: Expense) => sum + e.amount, 0
   )
+
+  // Combobox options: "Not linked" sentinel + real eyeballs
+  const eyeballOptions = [
+    { value: FILTER_NONE, label: 'Not linked to eyeball' },
+    ...eyeballs.map((e) => ({
+      value: e.id,
+      label: `${e.title ?? 'Eyeball'} — ${e.date}`,
+    })),
+  ]
 
   // ── Handlers ──────────────────────────────────
 
@@ -126,24 +141,19 @@ const ExpensesPage = () => {
       </div>
 
       {/* Filter */}
-      <div className="flex gap-3 mb-4">
-        <select
+      <div className="flex gap-3 mb-4 items-start">
+        <EyeballCombobox
+          options={eyeballOptions}
           value={filterEyeball}
-          onChange={(e) => setFilterEyeball(e.target.value)}
-          className="flex-1 bg-white border border-stone-200 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-[#1a1a18] transition"
-        >
-          <option value="">All Eyeballs</option>
-          <option value="none">Not linked to eyeball</option>
-          {eyeballs.map((e) => (
-            <option key={e.id} value={e.id}>
-              {e.title ?? 'Eyeball'} — {e.date}
-            </option>
-          ))}
-        </select>
+          onChange={setFilterEyeball}
+          placeholder="Search eyeballs…"
+          emptyLabel="All Eyeballs"
+          className="flex-1"
+        />
         {filterEyeball && (
           <button
-            onClick={() => setFilterEyeball('')}
-            className="text-sm text-stone-400 hover:text-[#1a1a18] px-4 py-2 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors whitespace-nowrap"
+            onClick={() => setFilterEyeball(FILTER_ALL)}
+            className="text-sm text-stone-400 hover:text-[#1a1a18] px-4 py-2.5 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors whitespace-nowrap"
           >
             Clear
           </button>

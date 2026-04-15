@@ -9,6 +9,9 @@ import ExpensesPage from './features/expenses/ExpensesPage'
 import DashboardPage from './features/dashboard/DashboardPage'
 import EventsPage from './features/events/EventsPage'
 
+import OrdersPage from './features/orders/OrdersPage'
+import OrderDetail from './features/orders/OrderDetail'
+
 
 import EventsPublicPage from './pages/EventsPublicPage'
 import LandingPage from './pages/LandingPage'
@@ -20,10 +23,8 @@ import LoginPage from './features/auth/LoginPage'
 
 export const router = createBrowserRouter([
 
-  // ── Standalone ─────────────────────────────────
   { path: '/login', element: <LoginPage /> },
 
-  // ── Public Routes ──────────────────────────────
   {
     element: <PublicLayout />,
     children: [
@@ -33,7 +34,6 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // ── Admin Routes ───────────────────────────────
   {
     element: (
       <ProtectedRoute>
@@ -49,6 +49,8 @@ export const router = createBrowserRouter([
       { path: '/admin/contributions',  element: <ContributionsPage /> },
       { path: '/admin/expenses',       element: <ExpensesPage /> },
       { path: '/admin/events',         element: <EventsPage /> },
+      { path: '/admin/orders',     element: <OrdersPage /> },
+      { path: '/admin/orders/:id', element: <OrderDetail /> },
     ],
   },
 ])

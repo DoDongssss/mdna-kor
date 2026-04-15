@@ -11,13 +11,13 @@ const AttendanceToggle = ({ record, isSaving, onToggle }: AttendanceToggleProps)
 
   return (
     <article className={`flex items-center justify-between px-4 py-3.5 rounded-xl border transition-colors ${
-      isPresent ? 'bg-emerald-50 border-emerald-100' : 'bg-white border-slate-200'
+      isPresent ? 'bg-sky-50 border-sky-100' : 'bg-white border-slate-200'
     }`}>
 
       {/* Member info */}
       <div className="flex items-center gap-3 min-w-0">
         <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-          isPresent ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'
+          isPresent ? 'bg-sky-100 text-sky-600' : 'bg-slate-100 text-slate-500'
         }`}>
           {record.member_name.charAt(0).toUpperCase()}
         </div>
@@ -32,7 +32,7 @@ const AttendanceToggle = ({ record, isSaving, onToggle }: AttendanceToggleProps)
       {/* Toggle */}
       <div className="flex items-center gap-2.5 shrink-0">
         <span className={`text-xs font-medium hidden sm:inline ${
-          isPresent ? 'text-emerald-600' : 'text-slate-400'
+          isPresent ? 'text-sky-600' : 'text-slate-400'
         }`}>
           {isPresent ? 'Present' : 'Absent'}
         </span>
@@ -43,7 +43,7 @@ const AttendanceToggle = ({ record, isSaving, onToggle }: AttendanceToggleProps)
           onClick={() => onToggle(record.member_id, record.status)}
           disabled={isSaving}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-            isPresent ? 'bg-emerald-500' : 'bg-slate-200'
+            isPresent ? 'bg-sky-500' : 'bg-slate-200'
           }`}
         >
           <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
