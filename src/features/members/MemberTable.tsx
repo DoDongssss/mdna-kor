@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react'
 import {
-  ChevronLeft,
-  ChevronRight,
   Pencil,
   Phone,
   Search,

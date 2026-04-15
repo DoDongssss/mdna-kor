@@ -74,7 +74,6 @@ export const deleteOrderBatch = async (id: string) => {
 
 export const getOrderItemsByBatch = async (
   batchId: string,
-  pricePerUnit: number
 ): Promise<OrderItemWithDetails[]> => {
   const { data: items, error: itemsError } = await itemTable()
     .select('*, members(name, nickname)')

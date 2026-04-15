@@ -42,8 +42,6 @@ const ExpenseForm = ({
     },
   })
 
-  const eyeballId = watch('eyeball_id') ?? ''
-
   // Track combobox value as string (empty string = none)
   const [comboValue, setComboValue] = useState('')
 
