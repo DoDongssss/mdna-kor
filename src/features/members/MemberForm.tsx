@@ -206,25 +206,25 @@ const MemberForm = ({
             </div>
           </div>
 
-          {/* Footer actions */}
-          <div className="mt-6 flex flex-col-reverse gap-2.5 border-t border-slate-100 pt-5 sm:flex-row">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex h-11 flex-1 items-center justify-center rounded-xl bg-sky-500 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {isSubmitting
-                ? isEdit ? 'Saving…' : 'Adding…'
-                : isEdit ? 'Save changes' : 'Add member'}
-            </button>
-          </div>
+         {/* Footer actions */}
+        <div className="mt-6 flex gap-2.5 border-t border-slate-100 pt-5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex h-11 flex-1 items-center justify-center rounded-xl bg-sky-500 text-sm font-medium text-white transition hover:bg-sky-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting
+              ? isEdit ? 'Saving…' : 'Adding…'
+              : isEdit ? 'Save changes' : 'Add member'}
+          </button>
+        </div>
         </form>
       </div>
     </div>

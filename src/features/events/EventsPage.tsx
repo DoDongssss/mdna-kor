@@ -100,7 +100,7 @@ const EventsPage = () => {
         action={
           <button
             onClick={handleAdd}
-            className="bg-[#1a1a18] text-white text-sm px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
+            className="bg-sky-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-sky-800 transition-colors"
           >
             + New Event
           </button>
@@ -169,7 +169,7 @@ const EventsPage = () => {
             tab === 'upcoming' ? (
               <button
                 onClick={handleAdd}
-                className="bg-[#1a1a18] text-white text-sm px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
+                className="bg-sky-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-sky-800 transition-colors"
               >
                 + New Event
               </button>

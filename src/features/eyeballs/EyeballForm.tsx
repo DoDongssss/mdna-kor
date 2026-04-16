@@ -188,7 +188,7 @@ const EyeballForm = ({
           </div>
 
           {/* Footer */}
-          <div className="mt-6 flex flex-col-reverse gap-2.5 border-t border-slate-100 pt-5 sm:flex-row">
+          <div className="mt-6 flex gap-2.5 border-t border-slate-100 pt-5">
             <button
               type="button"
               onClick={onClose}
