@@ -53,7 +53,7 @@ const MemberForm = ({
         is_active: true,
       })
     }
-  }, [member, reset])
+  }, [member, reset, open])
 
   if (!open) return null
 

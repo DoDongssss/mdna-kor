@@ -54,7 +54,7 @@ const DashboardPage = () => {
             {/* Net Balance */}
             <div className={`relative overflow-hidden rounded-2xl p-5 col-span-2 lg:col-span-1 ${
               netBalance >= 0
-                ? 'bg-slate-950 text-white'
+                ? 'bg-sky-950 text-white'
                 : 'bg-red-600 text-white'
             }`}>
               <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-white/5" />
@@ -128,7 +128,7 @@ const DashboardPage = () => {
 
           {/* ── Upcoming eyeball banner ── */}
           {upcomingEyeball && (
-            <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 px-6 py-5">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-sky-950 px-6 py-5">
               {/* Decorative rings */}
               <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 -translate-y-1/3 translate-x-1/3 rounded-full border border-white/5" />
               <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 -translate-y-1/3 translate-x-1/3 rounded-full border border-white/5" />

@@ -47,11 +47,11 @@ const AttendanceContributionRow = ({
 
   return (
     <div className={`rounded-xl border p-4 transition-colors ${
-      isPresent
-        ? 'bg-green-50 border-green-100'
-        : 'bg-white border-stone-100'
+      isPresent ? 'bg-green-50 border-green-100' : 'bg-white border-stone-100'
     }`}>
-      <div className="flex items-center gap-3 flex-wrap">
+
+      {/* Row 1: Avatar + Name + Toggle */}
+      <div className="flex items-center gap-3 min-w-0">
 
         {/* Avatar */}
         <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
@@ -96,8 +96,11 @@ const AttendanceContributionRow = ({
           </span>
         </div>
 
-        {/* Amount input */}
-        <div className="flex items-center gap-1.5 shrink-0">
+      </div>
+
+      {/* Row 2: Amount + Save */}
+      <div className="mt-3 flex w-full items-center gap-2 sm:justify-end">
+        <div className="flex min-w-0 flex-1 sm:flex-none sm:w-48 items-center gap-1.5 rounded-lg border border-stone-200 bg-white px-3 py-1.5">
           <span className="text-xs text-stone-400">₱</span>
           <input
             type="number"
@@ -106,11 +109,9 @@ const AttendanceContributionRow = ({
             value={amount}
             onChange={handleAmountChange}
             disabled={!isPresent || isSaving}
-            className="w-24 bg-white border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-[#1a1a18] text-right focus:outline-none focus:border-[#1a1a18] transition disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-stone-50"
+            className="min-w-0 flex-1 bg-transparent text-sm text-[#1a1a18] text-right focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
           />
         </div>
-
-        {/* Save button */}
         <button
           onClick={handleSave}
           disabled={!isDirty || isSaving}
@@ -123,12 +124,11 @@ const AttendanceContributionRow = ({
             </span>
           ) : 'Save'}
         </button>
-
       </div>
 
       {/* Existing contribution indicator */}
       {contribution && (
-        <div className="mt-2 ml-12 flex items-center gap-1.5">
+        <div className="mt-2 flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
           <p className="text-xs text-stone-400">
             Recorded contribution: ₱{contribution.amount.toLocaleString()}
