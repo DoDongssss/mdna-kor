@@ -19,6 +19,7 @@ export interface EyeballSummary {
   title: string | null
   date: string
   location: string
+  notes: string | null
   present_count: number
   absent_count: number
   total_collected: number

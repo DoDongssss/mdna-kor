@@ -6,12 +6,38 @@ const eyeballsTable = () => supabase.from('eyeballs') as any
 
 export const getEyeballs = async () => {
   const { data, error } = await supabase
-    .from('eyeball_summary')
-    .select('*')
+    .from('eyeballs')
+    .select(`
+      *,
+      attendance(status),
+      contributions(amount)
+    `)
     .order('date', { ascending: false })
 
   if (error) throw error
-  return data
+
+  const { count: totalMembers } = await supabase
+    .from('members')
+    .select('*', { count: 'exact', head: true })
+
+  return data.map((eyeball) => {
+    const presentCount = eyeball.attendance?.filter(
+      (a: { status: string }) => a.status === 'present'
+    ).length ?? 0
+
+    const absentCount = eyeball.attendance?.filter(
+      (a: { status: string }) => a.status === 'absent'
+    ).length ?? 0
+
+    return {
+      ...eyeball,
+      present_count: presentCount,
+      absent_count: absentCount || ((totalMembers ?? 0) - presentCount),
+      total_collected: eyeball.contributions?.reduce(
+        (sum: number, c: { amount: number }) => sum + c.amount, 0
+      ) ?? 0,
+    }
+  })
 }
 
 export const getEyeballById = async (id: string) => {
