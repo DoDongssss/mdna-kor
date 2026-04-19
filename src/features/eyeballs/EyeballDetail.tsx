@@ -31,6 +31,7 @@ import AttendanceContributionRow from '../attendance/AttendanceContributionRow'
 import Pagination from '../../components/common/Pagination'
 
 type TabType = 'attendance' | 'contributions'
+type AttendanceFilter = 'all' | 'present' | 'absent'
 
 const PAGE_SIZE = 10
 
@@ -94,6 +95,7 @@ const EyeballDetail = () => {
   const [savingId, setSavingId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [attendanceFilter, setAttendanceFilter] = useState<AttendanceFilter>('all')
 
   const {
     attendance,
@@ -139,6 +141,7 @@ const EyeballDetail = () => {
 
   useEffect(() => {
     setCurrentPage(1)
+    setAttendanceFilter('all')
   }, [activeTab, search])
 
   const handleRefresh = async () => {
@@ -166,9 +169,18 @@ const EyeballDetail = () => {
 
   const normalizedSearch = search.trim().toLowerCase()
 
-  const filteredAttendance = useMemo(
+  const searchMatchedAttendance = useMemo(
     () => attendance.filter((r) => matchesMemberSearch(r, normalizedSearch)),
     [attendance, normalizedSearch],
+  )
+
+  const filteredAttendance = useMemo(
+    () =>
+      searchMatchedAttendance.filter((r) => {
+        if (attendanceFilter === 'all') return true
+        return r.status === attendanceFilter
+      }),
+    [searchMatchedAttendance, attendanceFilter],
   )
 
   const filteredContributions = useMemo(
@@ -193,6 +205,33 @@ const EyeballDetail = () => {
   const filteredCollected = useMemo(
     () => filteredContributions.reduce((sum, c) => sum + c.amount, 0),
     [filteredContributions],
+  )
+
+  const filterPills = useMemo(
+    () => [
+      {
+        value: 'all' as AttendanceFilter,
+        label: 'All',
+        count: searchMatchedAttendance.length,
+        active: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
+        activeBadge: 'bg-sky-100 text-sky-700',
+      },
+      {
+        value: 'present' as AttendanceFilter,
+        label: 'Present',
+        count: searchMatchedAttendance.filter((r) => r.status === 'present').length,
+        active: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+        activeBadge: 'bg-emerald-100 text-emerald-700',
+      },
+      {
+        value: 'absent' as AttendanceFilter,
+        label: 'Absent',
+        count: searchMatchedAttendance.filter((r) => r.status === 'absent').length,
+        active: 'bg-orange-50 text-orange-700 ring-1 ring-orange-200',
+        activeBadge: 'bg-orange-100 text-orange-700',
+      },
+    ],
+    [searchMatchedAttendance],
   )
 
   const activeTabDetails = TABS.find((t) => t.value === activeTab)
@@ -357,27 +396,57 @@ const EyeballDetail = () => {
 
         {/* Tab header */}
         <div className="border-b border-slate-100 px-4 py-3 sm:px-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-center gap-2.5">
-              {ActiveTabIcon && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                  <ActiveTabIcon size={15} />
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 items-center gap-2.5">
+                {ActiveTabIcon && (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                    <ActiveTabIcon size={15} />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-slate-950">{activeTabDetails?.label}</p>
+                  <p className="text-xs text-slate-400">{activeTabDetails?.description}</p>
                 </div>
-              )}
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-slate-950">{activeTabDetails?.label}</p>
-                <p className="text-xs text-slate-400">{activeTabDetails?.description}</p>
+              </div>
+              <div className="relative w-full sm:w-72">
+                <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search name or nickname…"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:ring-2 focus:ring-sky-100"
+                />
               </div>
             </div>
-            <div className="relative w-full sm:w-72">
-              <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name or nickname…"
-                className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white focus:ring-2 focus:ring-sky-100"
-              />
-            </div>
+
+            {/* Attendance filter pills */}
+            {activeTab === 'attendance' && (
+              <div className="flex items-center gap-1.5">
+                {filterPills.map((pill) => {
+                  const isActive = attendanceFilter === pill.value
+                  return (
+                    <button
+                      key={pill.value}
+                      type="button"
+                      onClick={() => { setAttendanceFilter(pill.value); setCurrentPage(1) }}
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                        isActive
+                          ? pill.active
+                          : 'border border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+                      }`}
+                    >
+                      {pill.label}
+                      <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${
+                        isActive ? pill.activeBadge : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {pill.count}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </div>
         </div>
 
@@ -394,7 +463,10 @@ const EyeballDetail = () => {
               </div>
             ) : filteredAttendance.length === 0 ? (
               <div className="p-6">
-                <EmptyState title="No matching members" description="Try a different name or nickname." />
+                <EmptyState
+                  title={attendanceFilter !== 'all' ? `No ${attendanceFilter} members` : 'No matching members'}
+                  description={attendanceFilter !== 'all' ? `No members are marked as ${attendanceFilter}.` : 'Try a different name or nickname.'}
+                />
               </div>
             ) : (
               <div className="space-y-2 p-3 sm:p-4">
@@ -499,6 +571,7 @@ const EyeballDetail = () => {
           </>
         )}
       </section>
+
       <Pagination
         currentPage={safePage}
         totalPages={totalPages}
